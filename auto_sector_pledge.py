@@ -20,7 +20,8 @@ def parse_sectors_list(stdout):
         if skip_header:
             skip_header = False
             continue
-        logger.debug("sector_info={}", sector_info)
+        if len(sector_info) == 0:
+            continue
         try:
             splits = sector_info.strip().split()
             _id, state, on_chain, active = splits[:4]
