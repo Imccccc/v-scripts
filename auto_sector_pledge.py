@@ -22,14 +22,14 @@ def parse_sectors_list(stdout):
             skip_header = False
             continue
         logger.debug("sector info = {}", sector_info)
-        _id, state, on_chain, active, expiration, deals = sector_info.strip().split()
+        _id, state, on_chain, active = sector_info.strip()[:28].split()
         current_sectors[_id] = {
             "ID": _id, 
             "State": state,
             "OnChain": on_chain,
             "Active": active,
-            "Expiration": expiration,
-            "Deals": deals
+            # "Expiration": expiration,
+            # "Deals": deals
         }
         if state in ["Proving", "Removing"]:
             continue
