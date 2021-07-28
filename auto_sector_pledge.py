@@ -43,6 +43,8 @@ def parse_sectors_list(stdout):
             state = ansi_replace(state)
             on_chain = ansi_replace(on_chain)
             active = ansi_replace(active)
+            logger.debug("id={}, state={}, len(state)={}, onChain={}, len(onChain)={}", 
+                _id, state, len(state), on_chain, len(on_chain))
             current_sectors[_id] = {
                 "ID": _id, 
                 "State": state,
