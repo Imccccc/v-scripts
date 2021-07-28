@@ -15,13 +15,13 @@ def parse_sectors_list(stdout):
     skip_header = True
     current_sectors = {}
     runing_sectors_cnt = 0
-    logger.debug("运行输出={stdout}")
+    logger.debug("运行输出={}", stdout)
 
     for sector_info in stdout.split("\n"):
         if skip_header:
             skip_header = False
             continue
-        logger.debug("sector info = {sector_info}")
+        logger.debug("sector info = {}", sector_info)
         _id, state, on_chain, active, expiration, deals = sector_info.strip().split()
         current_sectors[_id] = {
             "ID": _id, 
@@ -42,7 +42,7 @@ def compare_sectors_state(current_sectors):
     cslen = len(current_sectors)
     lslen = len(last_sectors)
     if cslen > lslen:
-        logger.info("发现sectors个数变动, current:{cslen} - {lslen}")
+        logger.info("发现sectors个数变动, current:{} - {}", cslen, lslen)
     # 对比当前与现在的
     for key in current_sectors.keys():
         current_sector_state = current_sectors[key]
@@ -50,12 +50,12 @@ def compare_sectors_state(current_sectors):
             last_sector_state = last_sectors[key]
         else:
             css = current_sector_state['State']
-            logger.info("发现sector新增, sector id = {key}, state = {css}")
+            logger.info("发现sector新增, sector id = {}, state = {}", key, css)
             continue
         if current_sector_state['State'] != last_sector_state['State']:
             css = current_sector_state['State']
             lss =  last_sector_state['State']
-            logger.info("发现sector变动, sector id={key}, statue {lss} -> {css}")
+            logger.info("发现sector变动, sector id={}, statue {} -> {}", key, lss, css)
 
     
 def run_sectors_pledge(running_cnt):
@@ -63,7 +63,7 @@ def run_sectors_pledge(running_cnt):
     while running_cnt < pledge_paralle_cnt:
         process = subprocess.Popen(['venus-sealer', 'sectors', 'pledge'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         stdout, stderr = process.communicate()
-        logger.info("运行 pledege完成, stdout={stdout}")
+        logger.info("运行 pledege完成, stdout={}", stdout)
 
 
 def check_sectors():
@@ -73,10 +73,10 @@ def check_sectors():
     current_sectors, runing_sectors_cnt = parse_sectors_list(stdout)
     last_sectors = current_sectors
     if running_cnt < pledge_paralle_cnt: # 检查是否要运行 pledge
-        logger.info("需要运行pledge, running={running_cnt}, target={pledge_paralle_cnt}")
+        logger.info("需要运行pledge, running={}, target={}", running_cnt, pledge_paralle_cnt)
         run_sectors_pledge()
     else:
-        logger.info("不需要pledge, running={running_cnt}")
+        logger.info("不需要pledge, running={}", running_cnt)
 
 
 def main_loop():
