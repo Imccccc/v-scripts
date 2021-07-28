@@ -9,7 +9,7 @@ ansi_escape = re.compile(r'''
     \x1B  # ESC
     (?:   # 7-bit C1 Fe (except CSI)
         [@-Z\\-_]
-    |     
+    |     # or [ for CSI, followed by a control sequence
         \[
         [0-?]*  # Parameter bytes
         [ -/]*  # Intermediate bytes
@@ -51,7 +51,7 @@ def parse_sectors_list(stdout):
                 # "Expiration": expiration,
                 # "Deals": deals
             }
-            if state in ["Proving", "Removing"]:
+            if "Proving" in state or  "Removing" in state:
                 continue
             runing_sectors_cnt = runing_sectors_cnt + 1
         except Exception as e:
