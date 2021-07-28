@@ -5,8 +5,17 @@ import subprocess
 import time
 import re
 
-ansi_escape = re.compile(r'''\x1B  (?:  [@-Z\\-_] |\[[0-?][ -/][@-~])a''', re.VERBOSE)
-
+ansi_escape = re.compile(r'''
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+''', re.VERBOSE)
 
 logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
 last_sectors = {}
