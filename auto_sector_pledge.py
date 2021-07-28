@@ -91,7 +91,7 @@ def run_sectors_pledge(running_cnt):
         stdout, stderr = process.communicate()
         logger.info("运行 pledege完成, stdout={}", stdout)
         running_cnt += 1
-    loogger.info("")
+    loger.info("")
 
 
 def check_sectors():
