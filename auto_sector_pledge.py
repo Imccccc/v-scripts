@@ -88,6 +88,7 @@ def run_sectors_pledge(running_cnt):
         process = subprocess.Popen(['venus-sealer', 'sectors', 'pledge'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         stdout, stderr = process.communicate()
         logger.info("运行 pledege完成, stdout={}", stdout)
+        running_cnt += 1
 
 
 def check_sectors():
