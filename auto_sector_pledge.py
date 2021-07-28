@@ -63,7 +63,7 @@ def run_sectors_pledge(running_cnt):
     while running_cnt < pledge_paralle_cnt:
         process = subprocess.Popen(['venus-sealer', 'sectors', 'pledge'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         stdout, stderr = process.communicate()
-        log.info("运行 pledege完成, stdout={stdout}")
+        logger.info("运行 pledege完成, stdout={stdout}")
 
 
 def check_sectors():
