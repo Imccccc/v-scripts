@@ -9,7 +9,7 @@ ansi_escape = re.compile(r'''
     \x1B  # ESC
     (?:   # 7-bit C1 Fe (except CSI)
         [@-Z\\-_]
-    |     # or [ for CSI, followed by a control sequence
+    |     
         \[
         [0-?]*  # Parameter bytes
         [ -/]*  # Intermediate bytes
@@ -99,7 +99,7 @@ def check_sectors():
     last_sectors = current_sectors
     if running_cnt < pledge_paralle_cnt: # 检查是否要运行 pledge
         logger.info("需要运行pledge, running={}, target={}", running_cnt, pledge_paralle_cnt)
-        run_sectors_pledge()
+        run_sectors_pledge(running_cnt)
     else:
         logger.info("不需要pledge, running={}", running_cnt)
 
