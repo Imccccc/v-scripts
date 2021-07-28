@@ -21,7 +21,7 @@ def parse_sectors_list(stdout):
         if skip_header:
             skip_header = False
             continue
-        logger.debug("sector info = {}", sector_info)
+        logger.debug("sector_info=\"{}\", sector_info[:28]=\"{}\"", sector_info, sector_info[:28])
         _id, state, on_chain, active = sector_info.strip()[:28].split()
         current_sectors[_id] = {
             "ID": _id, 
