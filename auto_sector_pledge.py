@@ -5,7 +5,7 @@ import subprocess
 import time
 
 
-logger.add("/root/logs/py-scripts-{time}.log", rotation="50 MB", retention="30 days")
+logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
 last_sectors = {}
 pledge_paralle_cnt = 3
 
