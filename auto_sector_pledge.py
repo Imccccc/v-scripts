@@ -3,11 +3,17 @@
 from loguru import logger
 import subprocess
 import time
+import re
+
+ansi_escape = re.compile(r'''\x1B  (?:  [@-Z\\-_] |\[[0-?][ -/][@-~])a''', re.VERBOSE)
 
 
-# logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
+logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
 last_sectors = {}
 pledge_paralle_cnt = 3
+
+def ansi_replace(text):
+    return ansi_escape.sub('', text)
 
 
 def parse_sectors_list(stdout):
@@ -25,6 +31,9 @@ def parse_sectors_list(stdout):
         try:
             splits = sector_info.strip().split()
             _id, state, on_chain, active = splits[:4]
+            state = ansi_replace(state)
+            on_chain = ansi_replace(on_chain)
+            active = ansi_replace(active)
             current_sectors[_id] = {
                 "ID": _id, 
                 "State": state,
@@ -73,6 +82,7 @@ def run_sectors_pledge(running_cnt):
 
 def check_sectors():
     '''运行 venus-sealer sectors list来检查状态'''
+    global last_sectors
     process = subprocess.Popen(['venus-sealer', 'sectors', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
     current_sectors, running_cnt = parse_sectors_list(stdout)
