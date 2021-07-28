@@ -35,7 +35,7 @@ def parse_sectors_list(stdout):
         if skip_header:
             skip_header = False
             continue
-        if len(sector_info) == 0:
+        if len(sector_info) == 0 or "RecoveryTimeout" in sector_info:
             continue
         try:
             splits = sector_info.strip().split()
