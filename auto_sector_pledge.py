@@ -35,7 +35,7 @@ def parse_sectors_list(stdout):
             if state in ["Proving", "Removing"]:
                 continue
             runing_sectors_cnt = runing_sectors_cnt + 1
-        except Exception, e:
+        except Exception as e:
             logger.error("解析失败, 不执行pledge, sector_info={}, length={}", sector_info, len(sector_info))
             return {}, pledge_paralle_cnt
     return current_sectors, runing_sectors_cnt
