@@ -89,6 +89,7 @@ def run_sectors_pledge(running_cnt):
         stdout, stderr = process.communicate()
         logger.info("运行 pledege完成, stdout={}", stdout)
         running_cnt += 1
+    loogger.info("")
 
 
 def check_sectors():
@@ -109,7 +110,8 @@ def main_loop():
     while True:
         logger.info("唤醒，开始检查sectors状态")
         check_sectors()
-        time.sleep(120)
+        logger.info("将会在300s后重新检查")
+        time.sleep(300)
 
 
 
