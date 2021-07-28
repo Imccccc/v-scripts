@@ -21,19 +21,23 @@ def parse_sectors_list(stdout):
         if skip_header:
             skip_header = False
             continue
-        splits = sector_info.split()
-        _id, state, on_chain, active = splits[:4]
-        current_sectors[_id] = {
-            "ID": _id, 
-            "State": state,
-            "OnChain": on_chain,
-            "Active": active,
-            # "Expiration": expiration,
-            # "Deals": deals
-        }
-        if state in ["Proving", "Removing"]:
-            continue
-        runing_sectors_cnt = runing_sectors_cnt + 1
+        try:
+            splits = sector_info.strip().split()
+            _id, state, on_chain, active = splits[:4]
+            current_sectors[_id] = {
+                "ID": _id, 
+                "State": state,
+                "OnChain": on_chain,
+                "Active": active,
+                # "Expiration": expiration,
+                # "Deals": deals
+            }
+            if state in ["Proving", "Removing"]:
+                continue
+            runing_sectors_cnt = runing_sectors_cnt + 1
+        expect Exception, e:
+            logger.error("解析失败, 不执行pledge, sector_info={}, length={}", sector_info, len(sector_info))
+            return {}, pledge_paralle_cnt
     return current_sectors, runing_sectors_cnt
 
 
