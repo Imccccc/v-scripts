@@ -15,11 +15,13 @@ def parse_sectors_list(stdout):
     skip_header = True
     current_sectors = {}
     runing_sectors_cnt = 0
-    
-    for sector_info in stdout.split():
+    log.debug("运行输出={stdout}")
+
+    for sector_info in stdout.split("\n"):
         if skip_header:
             skip_header = False
             continue
+        log.debug("sector info = {sector_info}")
         _id, state, on_chain, active, expiration, deals = sector_info.strip().split()
         current_sectors[_id] = {
             "ID": _id, 
@@ -66,7 +68,6 @@ def run_sectors_pledge(running_cnt):
 
 def check_sectors():
     '''运行 venus-sealer sectors list来检查状态'''
-    logger.info("唤醒，开始检查sectos状态")
     process = subprocess.Popen(['venus-sealer', 'sectors', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
     current_sectors, runing_sectors_cnt = parse_sectors_list(stdout)
