@@ -12,11 +12,14 @@ pledge_paralle_cnt = 3
 
 def parse_sectors_list(stdout):
     '''解析标准输出'''
-    count = 1
+    skip_header = True
     current_sectors = {}
-    stdout.readline() # 跳过header
     runing_sectors_cnt = 0
-    for sector_info in stdout.readlines():
+    
+    for sector_info in stdout.split():
+        if skip_header:
+            skip_header = False
+            continue
         _id, state, on_chain, active, expiration, deals = sector_info.strip().split()
         current_sectors[_id] = {
             "ID": _id, 
@@ -58,8 +61,7 @@ def run_sectors_pledge(running_cnt):
     while running_cnt < pledge_paralle_cnt:
         process = subprocess.Popen(['venus-sealer', 'sectors', 'pledge'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         stdout, stderr = process.communicate()
-        out = stdout.readlines()
-        log.info("运行 pledege完成, stdout={out}")
+        log.info("运行 pledege完成, stdout={stdout}")
 
 
 def check_sectors():
