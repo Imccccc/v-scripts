@@ -5,7 +5,7 @@ import subprocess
 import time
 
 
-logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
+# logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
 last_sectors = {}
 pledge_paralle_cnt = 3
 
@@ -21,8 +21,9 @@ def parse_sectors_list(stdout):
         if skip_header:
             skip_header = False
             continue
-        logger.debug("sector_info=\"{}\", sector_info[:28]=\"{}\"", sector_info, sector_info[:28])
-        _id, state, on_chain, active = sector_info.strip()[:28].split()
+        sis = sector_info[:28]
+        logger.debug("sector_info=\"{}\", sector_info[:28]=\"{}\"", sector_info, sis)
+        _id, state, on_chain, active = sis.strip().split()
         current_sectors[_id] = {
             "ID": _id, 
             "State": state,
