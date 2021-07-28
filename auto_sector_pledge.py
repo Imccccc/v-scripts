@@ -48,6 +48,7 @@ def parse_sectors_list(stdout):
         except Exception as e:
             logger.error("解析失败, 不执行pledge, sector_info={}, length={}", sector_info, len(sector_info))
             return {}, pledge_paralle_cnt
+    logger.info("sectors={}", current_sectors)
     return current_sectors, runing_sectors_cnt
 
 
