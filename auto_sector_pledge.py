@@ -15,13 +15,13 @@ def parse_sectors_list(stdout):
     skip_header = True
     current_sectors = {}
     runing_sectors_cnt = 0
-    log.debug("运行输出={stdout}")
+    logger.debug("运行输出={stdout}")
 
     for sector_info in stdout.split("\n"):
         if skip_header:
             skip_header = False
             continue
-        log.debug("sector info = {sector_info}")
+        logger.debug("sector info = {sector_info}")
         _id, state, on_chain, active, expiration, deals = sector_info.strip().split()
         current_sectors[_id] = {
             "ID": _id, 
