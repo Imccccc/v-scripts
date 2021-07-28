@@ -15,12 +15,12 @@ def parse_sectors_list(stdout):
     skip_header = True
     current_sectors = {}
     runing_sectors_cnt = 0
-    logger.debug("运行输出={}", stdout)
 
     for sector_info in stdout.split("\n"):
         if skip_header:
             skip_header = False
             continue
+        logger.debug("sector_info={}", sector_info)
         try:
             splits = sector_info.strip().split()
             _id, state, on_chain, active = splits[:4]
