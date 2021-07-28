@@ -43,8 +43,8 @@ def parse_sectors_list(stdout):
             state = ansi_replace(state)
             on_chain = ansi_replace(on_chain)
             active = ansi_replace(active)
-            logger.debug("id={}, state={}, len(state)={}, onChain={}, len(onChain)={}", 
-                _id, state, len(state), on_chain, len(on_chain))
+            # logger.debug("id={}, state={}, len(state)={}, onChain={}, len(onChain)={}", 
+            #    _id, state, len(state), on_chain, len(on_chain))
             current_sectors[_id] = {
                 "ID": _id, 
                 "State": state,
@@ -100,12 +100,14 @@ def check_sectors():
     process = subprocess.Popen(['venus-sealer', 'sectors', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
     current_sectors, running_cnt = parse_sectors_list(stdout)
-    last_sectors = current_sectors
+    compare_sectors_state(current_sectors)
     if running_cnt < pledge_paralle_cnt: # 检查是否要运行 pledge
         logger.info("需要运行pledge, running={}, target={}", running_cnt, pledge_paralle_cnt)
         run_sectors_pledge(running_cnt)
     else:
         logger.info("不需要pledge, running={}", running_cnt)
+
+    last_sectors = current_sectors
 
 
 def main_loop():
