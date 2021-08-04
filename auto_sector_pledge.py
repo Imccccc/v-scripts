@@ -19,7 +19,7 @@ ansi_escape = re.compile(r'''
 
 logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
 last_sectors = {}
-pledge_paralle_cnt = 3
+pledge_paralle_cnt = 7
 
 def ansi_replace(text):
     return ansi_escape.sub('', text)
@@ -59,7 +59,7 @@ def parse_sectors_list(stdout):
         except Exception as e:
             logger.error("解析失败, 不执行pledge, sector_info={}, length={}", sector_info, len(sector_info))
             return {}, pledge_paralle_cnt
-    logger.info("sectors={}", current_sectors)
+    # logger.info("sectors={}", current_sectors)
     return current_sectors, runing_sectors_cnt
 
 
@@ -97,7 +97,7 @@ def run_sectors_pledge(running_cnt):
 def check_sectors():
     '''运行 venus-sealer sectors list来检查状态'''
     global last_sectors
-    process = subprocess.Popen(['venus-sealer', 'sectors', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    process = subprocess.Popen(['venus-sealer', 'sectors', 'list', '--fast'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
     current_sectors, running_cnt = parse_sectors_list(stdout)
     compare_sectors_state(current_sectors)
