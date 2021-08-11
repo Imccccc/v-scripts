@@ -17,9 +17,10 @@ ansi_escape = re.compile(r'''
     )
 ''', re.VERBOSE)
 
-logger.add("/root/logs/py-scripts.log", rotation="50 MB", retention="30 days")
+logger.add("/storage/logs/py-scripts.log", rotation="50 MB", retention="30 days")
 last_sectors = {}
-pledge_paralle_cnt = 7
+pledge_paralle_cnt = 8
+last_pledge_time = 0.0
 
 def ansi_replace(text):
     return ansi_escape.sub('', text)
@@ -29,6 +30,7 @@ def parse_sectors_list(stdout):
     '''解析标准输出'''
     skip_header = True
     current_sectors = {}
+    jobs_cnt = {}
     runing_sectors_cnt = 0
 
     for sector_info in stdout.split("\n"):
@@ -53,7 +55,7 @@ def parse_sectors_list(stdout):
                 # "Expiration": expiration,
                 # "Deals": deals
             }
-            if "Proving" in state or  "Removing" in state:
+            if "Proving" in state or  "Removing" in state or _id in ('52'):
                 continue
             runing_sectors_cnt = runing_sectors_cnt + 1
         except Exception as e:
@@ -67,6 +69,9 @@ def compare_sectors_state(current_sectors):
     '''比较状态 生成变动消息'''
     cslen = len(current_sectors)
     lslen = len(last_sectors)
+    if lslen == 0: 
+        logger.info("第一次启动，不比较sectors状态")
+        return
     if cslen > lslen:
         logger.info("发现sectors个数变动, current:{} - {}", cslen, lslen)
     # 对比当前与现在的
@@ -97,6 +102,7 @@ def run_sectors_pledge(running_cnt):
 def check_sectors():
     '''运行 venus-sealer sectors list来检查状态'''
     global last_sectors
+    global last_pledge_time
     process = subprocess.Popen(['venus-sealer', 'sectors', 'list', '--fast'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = process.communicate()
     current_sectors, running_cnt = parse_sectors_list(stdout)
@@ -104,6 +110,9 @@ def check_sectors():
     if running_cnt < pledge_paralle_cnt: # 检查是否要运行 pledge
         logger.info("需要运行pledge, running={}, target={}", running_cnt, pledge_paralle_cnt)
         run_sectors_pledge(running_cnt)
+        curr_time = time.time()
+        logger.info("运行pledge需要{}s", curr_time - last_pledge_time)
+        last_pledge_time = curr_time
     else:
         logger.info("不需要pledge, running={}", running_cnt)
 
@@ -114,8 +123,8 @@ def main_loop():
     while True:
         logger.info("唤醒，开始检查sectors状态")
         check_sectors()
-        logger.info("将会在300s后重新检查")
-        time.sleep(300)
+        logger.info("将会在60s后重新检查")
+        time.sleep(60)
 
 
 
